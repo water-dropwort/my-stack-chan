@@ -60,7 +60,7 @@ void loop()
   }
   else {
     uint32_t command = g_stackChanRemoteReceiver->readCommand();
-    if(1 == command & 0x1) {
+    if(1 == (command & 0x1)) {
       avatar.setMouthOpenRatio(1.0f);
     }
     else {

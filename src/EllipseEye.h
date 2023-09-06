@@ -45,8 +45,13 @@ namespace MyStackChan {
           c_frame = m_isSpecifiedColor ? m_c_frame : ctx->getColorPalette()->get(COLOR_BACKGROUND);
         } 
         
-        spi->fillEllipse(x, y, m_rx, m_ry, c_eye);
-        spi->drawEllipse(x, y, m_rx, m_ry, c_frame);
+        if(ctx->getEyeOpenRatio() > 0.5) {
+          spi->fillEllipse(x, y, m_rx, m_ry, c_eye);
+          spi->drawEllipse(x, y, m_rx, m_ry, c_frame);
+        }
+        else {
+          spi->fillRect(x - m_rx, y, m_rx * 2, 2, c_frame);
+        }
       }
   }; // end of EllipseEye class
 } // end of namespace

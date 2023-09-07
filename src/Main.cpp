@@ -2,17 +2,26 @@
 #include <Avatar.h>
 #include <ColorPalette.h>
 #include "CustomFace.h"
-#include "CtrlServoMotor.hpp"
 #include "StackChanRemoteReceiver.hpp"
+#include <ServoEasing.hpp>
 
 #define SERVO_PIN_X 33
 #define SERVO_PIN_Y 32
+#define SERVO_X_OFFSET -13
+#define SERVO_Y_OFFSET 4
+#define SERVO_X_MIN 0
+#define SERVO_X_MAX 180
+#define SERVO_Y_MIN 60
+#define SERVO_Y_MAX 100
+#define SERVO_X_DEG_PER_SEC 30
+#define SERVO_Y_DEG_PER_SEC 30
 
 using namespace m5avatar;
 using namespace MyStackChan;
 
 Avatar avatar;
-CtrlServoMotor ctrlServoMotor;
+ServoEasing g_servoX;
+ServoEasing g_servoY;
 int openLevel = 0;
 int maxOpenLevel = 4;
 int g_pre_servoX_command = 0;
@@ -27,9 +36,19 @@ void setup()
 
   Serial.begin(115200);
 
-  if(!ctrlServoMotor.initialize(SERVO_PIN_X, SERVO_PIN_Y, -13, 4)) {
-    Serial.println("ERR: Failed to initialize the motor controller.");
+  if(false == g_servoX.attach(SERVO_PIN_X, 
+                              90 + SERVO_X_OFFSET, 
+                              DEFAULT_MICROSECONDS_FOR_0_DEGREE,
+                              DEFAULT_MICROSECONDS_FOR_180_DEGREE)) {
+    Serial.println("Fail:ServoX attach");
   }
+  if(false == g_servoY.attach(SERVO_PIN_Y,
+                              90 + SERVO_Y_OFFSET,
+                              DEFAULT_MICROSECONDS_FOR_0_DEGREE,
+                              DEFAULT_MICROSECONDS_FOR_180_DEGREE)) {
+    Serial.println("Fail:ServoY attach");
+  }
+  
 
   ColorPalette cp;
   cp.set(COLOR_PRIMARY,          TFT_BLACK);
@@ -70,13 +89,13 @@ void loop()
     int x = (command & 0x6) >> 1;
     if(x != g_pre_servoX_command) {
       if(x == 1) {
-        ctrlServoMotor.moveX_nonBlocking(0);
+        g_servoX.setEaseTo(SERVO_X_MIN + SERVO_X_OFFSET, SERVO_X_DEG_PER_SEC);
       }
       else if(x == 2) {
-        ctrlServoMotor.moveX_nonBlocking(180);
+        g_servoX.setEaseTo(SERVO_X_MAX + SERVO_X_OFFSET, SERVO_X_DEG_PER_SEC);
       }
       else {
-        ctrlServoMotor.stopX();
+        g_servoX.stop();
       }
     }
     g_pre_servoX_command = x;
@@ -84,13 +103,13 @@ void loop()
     int y = (command & 0b00011000) >> 3;
     if(y != g_pre_servoY_command) {
       if(y == 1) {
-        ctrlServoMotor.moveY_nonBlocking(0);
+        g_servoY.setEaseTo(SERVO_Y_MIN + SERVO_Y_OFFSET, SERVO_Y_DEG_PER_SEC);
       }
       else if(y == 2) {
-        ctrlServoMotor.moveY_nonBlocking(180);
+        g_servoY.setEaseTo(SERVO_Y_MAX + SERVO_Y_OFFSET, SERVO_Y_DEG_PER_SEC);
       }
       else {
-        ctrlServoMotor.stopY();
+        g_servoY.stop();
       }
     }
     g_pre_servoY_command = y;

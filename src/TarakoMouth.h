@@ -43,8 +43,8 @@ namespace MyStackChan {
         uint32_t lip_h = h * 0.2;
         uint32_t lip_r = lip_h * 0.5;
         uint32_t rect_h = (h - 2 * lip_h) * openRatio + lip_h;
-        uint32_t rect_w = w * 0.95;
-        uint32_t rect_x = l + w * 0.025;
+        uint32_t rect_w = w - lip_r * 2;
+        uint32_t rect_x = l + lip_r;
         uint32_t rect_y = cy - 0.5 * rect_h;
         spi->fillRect(rect_x, rect_y, rect_w, rect_h, c_mouth);
         uint32_t lip_yu = cy - 0.5 * rect_h - 0.5 * lip_h;

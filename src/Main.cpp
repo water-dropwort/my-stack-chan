@@ -89,10 +89,10 @@ void loop()
     int x = (command & 0x6) >> 1;
     if(x != g_pre_servoX_command) {
       if(x == 1) {
-        g_servoX.setEaseTo(SERVO_X_MIN + SERVO_X_OFFSET, SERVO_X_DEG_PER_SEC);
+        g_servoX.startEaseTo(SERVO_X_MIN + SERVO_X_OFFSET, SERVO_X_DEG_PER_SEC);
       }
       else if(x == 2) {
-        g_servoX.setEaseTo(SERVO_X_MAX + SERVO_X_OFFSET, SERVO_X_DEG_PER_SEC);
+        g_servoX.startEaseTo(SERVO_X_MAX + SERVO_X_OFFSET, SERVO_X_DEG_PER_SEC);
       }
       else {
         g_servoX.stop();
@@ -103,17 +103,16 @@ void loop()
     int y = (command & 0b00011000) >> 3;
     if(y != g_pre_servoY_command) {
       if(y == 1) {
-        g_servoY.setEaseTo(SERVO_Y_MIN + SERVO_Y_OFFSET, SERVO_Y_DEG_PER_SEC);
+        g_servoY.startEaseTo(SERVO_Y_MIN + SERVO_Y_OFFSET, SERVO_Y_DEG_PER_SEC);
       }
       else if(y == 2) {
-        g_servoY.setEaseTo(SERVO_Y_MAX + SERVO_Y_OFFSET, SERVO_Y_DEG_PER_SEC);
+        g_servoY.startEaseTo(SERVO_Y_MAX + SERVO_Y_OFFSET, SERVO_Y_DEG_PER_SEC);
       }
       else {
         g_servoY.stop();
       }
     }
     g_pre_servoY_command = y;
-    synchronizeAllServosAndStartInterrupt();
   }
 
   delay(30);
